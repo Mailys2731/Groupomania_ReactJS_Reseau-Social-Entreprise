@@ -35,6 +35,6 @@ exports.deletePost = (req, res) => {
     const id = parseInt(req.params.id)
     const postDeleted = posts.find(post => post=id ===id)
     posts.filter(post => post=id !== id)
-    const message = `Le post ${postDeleted.name} à bient été supprimé.`
+    const message = `Le post ${postDeleted.name} à bien été supprimé.`
     res.json(success(message, postDeleted))
 }
