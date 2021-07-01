@@ -2,6 +2,8 @@ const { Sequelize, DataTypes } = require ('sequelize')
 const PostModel = require ('../models/post') 
 const UserModel = require('../models/user')
 const bcrypt = require('bcrypt')
+
+
 //Instance sequelize qui représente la connexion à la BDD
 const sequelize = new Sequelize (
     //Nom BDD
@@ -30,6 +32,8 @@ sequelize.authenticate()
 const Post = PostModel(sequelize, DataTypes)
 const User = UserModel(sequelize, DataTypes)
 
+//Créé la table post associée au model
+const Post = PostModel(sequelize, DataTypes)
 
 //Synchronise tous les modèles à la BDD
 //Force simplifie le développement
@@ -53,13 +57,22 @@ const initDb = () => {
 }
 
 
-
-
-
-
-
-
 module.exports = {
     initDb, Post, User
 }
 
+/*const initDb = () => {
+    return sequelize.sync({force: true})
+    .then(_ =>{
+        Post.create({
+            name: post.name,
+            description: post.description,
+            imageUrl: post.imageUrl
+        }).then(post => console.log(post.toJSON()))
+        console.log('La base de données "Posts" a bien été synchronisée')
+    })
+}*/
+
+module.exports = {
+    Post
+}

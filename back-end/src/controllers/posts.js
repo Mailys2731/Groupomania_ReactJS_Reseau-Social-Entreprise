@@ -34,6 +34,11 @@ exports.createPost = (req, res) => {
     Post.create(
         req.body
     )
+=======
+exports.postPost = (req, res) => {
+    console.log(req.body)
+    Post.create(req.body)
+
     .then(post =>{
         const message = `Le post ${post.name} à bien été ajouté à la liste des posts`
         res.json({ message, data: post })
