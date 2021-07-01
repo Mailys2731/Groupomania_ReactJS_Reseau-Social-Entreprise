@@ -35,13 +35,13 @@ exports.signUp = (req, res) => {
 }
 
 exports.login = (req, res) => {
-    User.findOne({ where: { username: req.body.username } }).then(User => {
+    User.findOne({ where: { username: req.body.username } }).then(user => {
 
-        if(!User) {
+        if(!user) {
             const message = `L'utilisateur demandé n'existe pas.`
             return res.status(404).json({ message })
         }
-        bcrypt.compare(req.body.password, User.password).then(async valid => {
+        bcrypt.compare(req.body.password, user.password).then(async valid => {
             if (!valid) {
                 const message = `Le mot de passe est incorrect`;
                 return res.status(401).json({ message, data: user })
@@ -49,7 +49,7 @@ exports.login = (req, res) => {
 
             //JWT
             const token = jwt.sign(
-                { userId: User.id },
+                { userId: user.id },
                 privateKey,
                 { expiresIn: '24h' }
             )

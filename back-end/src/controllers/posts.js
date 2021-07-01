@@ -29,13 +29,9 @@ exports.getPost = (req, res) => {
     })
 }
 
-exports.createPost = (req, res) => {
 
-    Post.create(
-        req.body
-    )
-=======
-exports.postPost = (req, res) => {
+
+exports.createPost = (req, res) => {
     console.log(req.body)
     Post.create(req.body)
 
@@ -49,7 +45,7 @@ exports.postPost = (req, res) => {
         console.log(error)
     })
 }
-  
+
 exports.putPost = (req, res) => {
     const id = req.params.id
     Post.update(req.body, {

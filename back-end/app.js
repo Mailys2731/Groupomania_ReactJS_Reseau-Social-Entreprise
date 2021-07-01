@@ -31,11 +31,6 @@ app.use('/api/posts', postsRoutes)
 const usersRoutes = require('./src/routes/users')
 app.use('/api/users', usersRoutes)
 
-
-//Points de terminaison
-const postsRoutes = require('./src/routes/posts');
-app.use('/api/posts', postsRoutes)
-
 //Gestion des erreurs 404
 app.use(({res}) => {
     const message = 'Impossible de trouver la ressource demandée ! Vous pouvez essayer une autre URL.'
