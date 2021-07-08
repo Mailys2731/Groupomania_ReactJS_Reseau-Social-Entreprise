@@ -32,8 +32,11 @@ exports.getPost = (req, res) => {
 
 
 exports.createPost = (req, res) => {
-    console.log(req.body)
-    Post.create(req.body)
+    createPost = req.body
+    Post.create({
+        ...createPost,
+        imageUrl:  `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
+    })
 
     .then(post =>{
         const message = `Le post ${post.name} à bien été ajouté à la liste des posts`

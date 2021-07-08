@@ -4,13 +4,19 @@ const { read } = require('fs')
 //Middleware qui log toutes les requêtes
 const morgan = require('morgan')
 const sequelize = require('./src/db/sequelize')
+const cors = require ('cors');
+
 
 const app = express()
 const port =3000
 
+const path = require('path')
+app.use('/images', express.static(path.join(__dirname, 'images')));
+
 app
 .use(morgan ('dev'))
-.use(express.json());
+.use(express.json())
+.use(cors());
 
 //sequelize.initDb()
 
@@ -25,6 +31,9 @@ app.use((req, res, next) => {
 
 
 //Points de terminaison
+const postsComments = require('./src/routes/comments')
+app.use('/api/comments', postsComments)
+
 const postsRoutes = require('./src/routes/posts')
 app.use('/api/posts', postsRoutes)
 

@@ -1,6 +1,7 @@
 const { Sequelize, DataTypes } = require ('sequelize')
 const PostModel = require ('../models/post') 
 const UserModel = require('../models/user')
+const CommentModel = require('../models/comment')
 const bcrypt = require('bcrypt')
 
 
@@ -31,6 +32,7 @@ sequelize.authenticate()
 //Créé la table associée au model
 const Post = PostModel(sequelize, DataTypes)
 const User = UserModel(sequelize, DataTypes)
+const Comment = CommentModel(sequelize, DataTypes)
 
 
 //Synchronise tous les modèles à la BDD
@@ -41,7 +43,7 @@ const initDb = () => {
     .then(_ =>{
         console.log('INIT DB')
     
-        bcrypt.hash ('mailys, 10')
+        /*bcrypt.hash ('mailys, 10')
         .then(hash => {
             User.create({
                 username:'Mailys',
@@ -49,6 +51,7 @@ const initDb = () => {
             })
         })
         .then(user => console.log(user.toJSON()))
+        */
 
         console.log('La base de données a bien été synchronisée')
     })
@@ -56,7 +59,7 @@ const initDb = () => {
 
 
 module.exports = {
-    initDb, Post, User
+    initDb, Post, User, Comment
 }
 
 

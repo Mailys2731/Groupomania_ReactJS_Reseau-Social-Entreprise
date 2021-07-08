@@ -2,9 +2,10 @@ const { User } = require('../db/sequelize')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 const privateKey = require('../auth/private_key')
+const { token } = require('morgan')
 
 exports.signUp = (req, res) => {
-  if ( !req.body.username || !req.body.email || !req.body.password ) {
+  if ( !req.body.userName || !req.body.email || !req.body.password ) {
     return res.status(400).json({message: "Paramètre de connexion manquant."})
 }
     const nameRegex = /(.*[a-z]){3,30}/
@@ -12,11 +13,11 @@ exports.signUp = (req, res) => {
     //Huit caractères au minimum, au moins une lettre et un chiffre:
     const pwdRegex  = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/
 
-  if (nameRegex.test(req.body.username) && mailRegex.test(req.body.email) && pwdRegex.test(req.body.password)) {
+  if (nameRegex.test(req.body.userName) && mailRegex.test(req.body.email) && pwdRegex.test(req.body.password)) {
       bcrypt.hash(req.body.password, 10)
         .then(hash => {
           const user = new User({
-            username:   req.body.username,
+            userName:   req.body.userName,
             email: req.body.email,
             password:   hash
           });
@@ -35,7 +36,7 @@ exports.signUp = (req, res) => {
 }
 
 exports.login = (req, res) => {
-    User.findOne({ where: { username: req.body.username } }).then(user => {
+    User.findOne({ where: { userName: req.body.userName } }).then(user => {
 
         if(!user) {
             const message = `L'utilisateur demandé n'existe pas.`
@@ -69,12 +70,12 @@ exports.deleteUser = (req, res) => {
         const message = 'L\'utilisateur demandé n\'existe pas. Réessayez avec un autre identifiant';
         return res.status(404).json({message})  
     }
-    const userDeleted = user;
+    const userDeleted = user
     return User.destroy({
         where: { id: user.id}
     })
     .then(_ =>{
-        const message = `L\'utilisateur ${userDeleted.username} à bien été supprimé.`
+        const message = `L\'utilisateur ${userDeleted.userName} à bien été supprimé.`
         res.json({ message, data: user })
     })
 })
