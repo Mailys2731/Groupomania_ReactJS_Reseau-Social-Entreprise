@@ -1,12 +1,11 @@
-import React, { Component } from "react";
-import SignIn from "./components/signin/signin";
-import SignUp from "./components/signup/signup";
+import React, { Component } from "react";import AppRouter from "./AppRouter/appRouter";
+
+
 class App extends Component {
   render() {
     return (
-      <div>
-      <SignIn/>
-      </div >
+      <AppRouter />
+      //<AppProtectedRouter />
      
     )
   }

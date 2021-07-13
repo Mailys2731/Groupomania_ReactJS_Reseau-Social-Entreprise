@@ -54,8 +54,7 @@ exports.login = (req, res) => {
                 privateKey,
                 { expiresIn: '24h' }
             )
-            const message = `L'utilisateur a été connecté avec succès`;
-            return res.json({ message, data: User, token })
+            return res.json({ token })
         })
     })
     .catch(error => {

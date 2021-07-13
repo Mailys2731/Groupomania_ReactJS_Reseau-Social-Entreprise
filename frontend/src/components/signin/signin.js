@@ -4,17 +4,37 @@ import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from '@material-ui/core/TextField';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Checkbox from '@material-ui/core/Checkbox';
 import Link from '@material-ui/core/Link';
 import Grid from '@material-ui/core/Grid';
 import Box from '@material-ui/core/Box';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
-
 import Container from '@material-ui/core/Container';
+import { withStyles } from '@material-ui/core/styles';
+import logo from '../logos/logo1.png'
 
-//import useStyles from './stylesSignin';
+const styles = (theme) => ({
+  paper: {
+    marginTop: theme.spacing(8),
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+  },
+  avatar: {
+    margin: theme.spacing(1),
+    backgroundColor: theme.palette.secondary.main,
+  },
+  form: {
+    width: '100%', // Fix IE 11 issue.
+    marginTop: theme.spacing(1),
+  },
+  submit: {
+    margin: theme.spacing(3, 0, 2),
+  },
+  logo1:{
+    margin: theme.spacing(2),
+  }
+});
 
 
 function Copyright() {
@@ -83,24 +103,26 @@ class SignIn extends Component {
     this.setState({ userName: '', email: '', password: '' })
   }
   render() {
+    const { classes } = this.props;
     return (
       <Container component="main" maxWidth="xs">
         <CssBaseline />
-        <div /*className={classes.paper}*/>
-          <Avatar /*className={classes.avatar}*/>
+        <div className={classes.paper}>
+          <img className={classes.logo1} alt="logo groupomania" src={logo} width="300px" />
+          <Avatar className={classes.avatar}>
             <LockOutlinedIcon />
           </Avatar>
           <Typography component="h1" variant="h5">
-            Se connecter
+            Connexion
           </Typography>
-          <form onSubmit={this.onSubmit}/*className={classes.form}*/>
+          <form onSubmit={this.onSubmit} className={classes.form}>
             <TextField
               variant="outlined"
               margin="normal"
               required
               fullWidth
               name="userName"
-              label="userName"
+              label="Pseudo"
               type="userName"
               id="userName"
               autoComplete="userName"
@@ -112,7 +134,7 @@ class SignIn extends Component {
               required
               fullWidth
               id="email"
-              label="Email Address"
+              label="Email"
               name="email"
               autoComplete="email"
               autoFocus
@@ -124,15 +146,11 @@ class SignIn extends Component {
               required
               fullWidth
               name="password"
-              label="Password"
+              label="Mot de passe"
               type="password"
               id="password"
               autoComplete="current-password"
               value={this.state.password} onChange={this.onChangePassword}
-            />
-            <FormControlLabel
-              control={<Checkbox value="remember" color="primary" />}
-              label="Remember me"
             />
             <Button
               type="submit"
@@ -140,19 +158,14 @@ class SignIn extends Component {
               variant="contained"
               color="primary"
               id="submitLogin"
-            //className={classes.submit}
+              className={classes.submit}
             >
-              Sign In
+              Se connecter
             </Button>
             <Grid container>
-              <Grid item xs>
-                <Link href="#" variant="body2">
-                  Forgot password?
-                </Link>
-              </Grid>
               <Grid item>
-                <Link href="#" variant="body2">
-                  {"Don't have an account? Sign Up"}
+                <Link href="/sign-up" variant="body2">
+                  {"Vous n'avez pas encore de compte? Créer un compte"}
                 </Link>
               </Grid>
             </Grid>
@@ -168,7 +181,7 @@ class SignIn extends Component {
 
 
 }
-export default SignIn
+export default withStyles(styles, { withTheme: true })(SignIn)
 
 
 /*const user = new FormData ();

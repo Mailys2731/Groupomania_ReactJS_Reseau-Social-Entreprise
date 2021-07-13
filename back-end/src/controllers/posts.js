@@ -1,4 +1,6 @@
 const { Post } = require('../db/sequelize')
+const fs = require("fs");
+
 
 exports.getPosts = (req, res) => {
     Post.findAll()
@@ -32,10 +34,10 @@ exports.getPost = (req, res) => {
 
 
 exports.createPost = (req, res) => {
-    createPost = req.body
+    createPost = JSON.parse(req.body.post)
     Post.create({
         ...createPost,
-        imageUrl:  `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
+        imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`,
     })
 
     .then(post =>{

@@ -8,15 +8,16 @@ import Link from '@material-ui/core/Link';
 import Box from '@material-ui/core/Box';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
-import { makeStyles } from '@material-ui/core/styles';
+import { withStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
+import logo from '../logos/logo1.png'
 
 function Copyright() {
   return (
     <Typography variant="body2" color="textSecondary" align="center">
       {'Copyright © '}
       <Link color="inherit" href="https://material-ui.com/">
-        Your Website
+        Groupomania
       </Link>{' '}
       {new Date().getFullYear()}
       {'.'}
@@ -24,7 +25,7 @@ function Copyright() {
   );
 }
 
-const useStyles = makeStyles((theme) => ({
+const styles = (theme) => ({
   paper: {
     marginTop: theme.spacing(8),
     display: 'flex',
@@ -42,7 +43,10 @@ const useStyles = makeStyles((theme) => ({
   submit: {
     margin: theme.spacing(3, 0, 2),
   },
-}));
+  logo1:{
+    margin: theme.spacing(2),
+  }
+});
 
 
 
@@ -83,12 +87,12 @@ class SignUp extends Component {
       email: this.state.email,
       password: this.state.password
     };
-    console.log(user)
+   
 
     UserDataService.signUp(user)
       .then((res) => {
         console.log('création compte ok')
-        //window.location = "/mywall";
+        this.props.history.push("/sign-in");
       }).catch((error) => {
         console.log(error);
       });
@@ -96,17 +100,20 @@ class SignUp extends Component {
     this.setState({ userName: '', email: '', password: '' })
   }
   render() {
+    const { classes } = this.props;
+
     return (
       <Container component="main" maxWidth="xs">
         <CssBaseline />
-        <div /*className={classes.paper}*/>
-          <Avatar /*className={classes.avatar}*/>
+        <div className={classes.paper}>
+        <img className={classes.logo1} alt="logo groupomania" src={logo} width="300px" />
+          <Avatar className={classes.avatar}>
             <LockOutlinedIcon />
           </Avatar>
           <Typography component="h1" variant="h5">
             Créer un compte
           </Typography>
-          <form onSubmit={this.onSubmit}/*className={classes.form}*/>
+          <form onSubmit={this.onSubmit}className={classes.form}>
             <TextField
               variant="outlined"
               margin="normal"
@@ -148,10 +155,13 @@ class SignUp extends Component {
               variant="contained"
               color="primary"
               id="submitLogin"
-            //className={classes.submit}
+              className={classes.submit}
             >
               Créer mon compte
             </Button>
+            <Link href="sign-in">
+              Me connecter
+            </Link>
           </form>
         </div>
         <Box mt={8}>
@@ -164,4 +174,4 @@ class SignUp extends Component {
 
 
 }
-export default SignUp
+export default withStyles(styles, { withTheme: true })(SignUp)

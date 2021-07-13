@@ -11,7 +11,7 @@ router.get('/', auth, postsCtrl.getPosts)
 
 router.get('/:id', auth, postsCtrl.getPost)
 
-router.post('/', auth, multer, postsCtrl.createPost)
+router.post('/', multer, postsCtrl.createPost)
 
 router.put('/:id', auth, multer, postsCtrl.putPost)
 
