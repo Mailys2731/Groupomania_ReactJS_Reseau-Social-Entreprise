@@ -43,24 +43,29 @@ const styles = theme => ({
     },
 });
 
-class AllPosts extends Component {
+class Post extends Component {
     
     constructor(props) {
         super(props);
-        this.state = 
-            []
-          
-        
-      }
+        this.state = {
+            expanded: false
+        }
+    }
+    
+
+    handleExpandClick = () => {
+        if (!this.state.expanded) {
+            //axios() Chercher les commentaires, Loading le temps qu'on charge, etc..., Croix rouge si erreur
+        }
+        this.setState((prevState) => ({
+            expanded: !prevState.expanded
+        }))
+    }
     
 
     render() {
         const { classes } = this.props;
-        const [expanded, setExpanded] = this.state
-
-        const handleExpandClick = () => {
-            setExpanded(!expanded);
-        }
+        const expanded = this.state.expanded;
 
 
         return (
@@ -71,18 +76,9 @@ class AllPosts extends Component {
                             <img className={classes.icon} alt="avatar groupomania" src={icon} width="50px"/>
                         </Avatar>
                     }
-                    action={
-                        <IconButton aria-label="settings">
-                            <MoreVertIcon />
-                        </IconButton>
-                    }
+                   
                     title="Shrimp and Chorizo Paella"
                     subheader="September 14, 2016"
-                />
-                <CardMedia
-                    className={classes.media}
-                    image="/static/images/cards/paella.jpg"
-                    title="Paella dish"
                 />
                 <CardContent>
                     <Typography variant="body2" color="textSecondary" component="p">
@@ -101,7 +97,7 @@ class AllPosts extends Component {
                         className={clsx(classes.expand, {
                             [classes.expandOpen]: expanded,
                         })}
-                        onClick={handleExpandClick}
+                        onClick={this.handleExpandClick}
                         aria-expanded={expanded}
                         aria-label="show more"
                     >
@@ -140,4 +136,4 @@ class AllPosts extends Component {
     }
 }
 
-export default withStyles(styles, { withTheme: true })(AllPosts)
+export default withStyles(styles, { withTheme: true })(Post)

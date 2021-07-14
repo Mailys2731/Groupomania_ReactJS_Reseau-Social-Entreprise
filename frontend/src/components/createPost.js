@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PostDataService from '../services/posts-service';
 import { withStyles } from '@material-ui/core/styles';
-
+import axios from 'axios';
 import Card from '@material-ui/core/Card';
 import CardHeader from '@material-ui/core/CardHeader';
 import CardContent from '@material-ui/core/CardContent';
@@ -39,46 +39,57 @@ const styles = theme => ({
 });
 
 class CreatePost extends Component {
-
-    constructor(props) {
+    constructor(props){
         super(props)
-    
-        this.onChangeDescription = this.onChangeDescription.bind(this);
-        this.onChangeImageUrl = this.onChangeImageUrl.bind(this);
-        this.onSubmit = this.onSubmit.bind(this);
-    
-        this.state = {
-          description: '',
-          imageUrl: '',
-        }
-      }
-    
-      onChangeDescription(e) {
-        this.setState({ description: e.target.value })
-      }
-    
-      onChangeImageUrl(e) {
-        this.setState({ imageUrl: e.target.value.toString() })
-      }
-    
-      onSubmit(e) {
-        e.preventDefault()
-    
-        const newPost = {
-          description: this.state.description,
-          imageUrl: this.state.imageUrl,
-        };
-       
-        PostDataService.createPost(newPost)
-          .then((res) => {
-            console.log('création du post avec succés !')
-          }).catch((error) => {
-            console.log(error);
-          });
 
-        //this.setState({ description: '', imageUrl: '' })
-      }
+        this.onChangeDescription = this.onChangeDescription.bind(this)
 
+    }
+    state = {
+        description:'',
+        // Initially, no file is selected
+        selectedFile: null
+      };
+
+      onChangeDescription (e) {
+          this.setState({description:e.target.value})
+      }
+      
+      // On file select (from the pop up)
+
+      onFileChange = event => {
+      
+        // Update the state
+        this.setState({ selectedFile: event.target.files[0] });
+      
+      };
+
+      // On file upload (click the upload button)
+    onFileUpload = () => {
+    
+        // Create an object of formData
+        const formData = new FormData();
+      
+        // Update the formData object
+        formData.append(
+          "image",
+          this.state.selectedFile,
+          this.state.selectedFile.name
+        );
+        formData.append(
+            "description",
+            this.state.description
+        )
+      
+        // Details of the uploaded file
+        console.log(this.state.selectedFile);
+      
+        // Request made to the backend api
+        // Send formData object
+        axios.post("http://localhost:3000/api/posts/", formData);
+      };
+      
+   
     render() {
         const { classes } = this.props;
 
@@ -92,12 +103,12 @@ class CreatePost extends Component {
                     }
                     disableTypography
                     title="Créer une publication"
-                   
+
                 />
                 <CardContent>
 
                     <div>
-                        <form onSubmit={this.onSubmit} className={classes.form}>
+                        <form encType="multipart/form-data" method="POST">
                             <TextField
                                 color="secondary"
                                 variant="outlined"
@@ -110,6 +121,7 @@ class CreatePost extends Component {
                                 value={this.state.description} onChange={this.onChangeDescription}
                             />
                             <TextField
+                                input type="file"
                                 color="secondary"
                                 variant="outlined"
                                 margin="normal"
@@ -117,19 +129,18 @@ class CreatePost extends Component {
                                 fullWidth
                                 id="imageUrl"
                                 label="Ajoutez votre image !"
-                                name="imageUrl"
-                                input type="file"
+                                name="image"
                                 focused
-                                value={this.state.imageUrl} onChange={this.onChangeImageUrl}
+                                onChange={this.onFileChange}
                             />
 
                             <Button
-                                type="submit"
                                 fullWidth
                                 variant="contained"
                                 color="secondary"
                                 id="submitLogin"
-                                className={classes.submit}
+                                //className={classes.submit}
+                                onClick={this.onFileUpload}
                             >
                                 PUBLIER
                             </Button>

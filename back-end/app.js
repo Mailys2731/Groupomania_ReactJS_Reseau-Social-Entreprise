@@ -5,13 +5,12 @@ const { read } = require('fs')
 const morgan = require('morgan')
 const sequelize = require('./src/db/sequelize')
 const cors = require ('cors');
-
+const bodyParser = require ('body-parser')
 
 const app = express()
 const port =3000
 
 const path = require('path')
-app.use('/images', express.static(path.join(__dirname, 'images')));
 
 app
 .use(morgan ('dev'))
@@ -39,6 +38,7 @@ app.use('/api/posts', postsRoutes)
 
 const usersRoutes = require('./src/routes/users')
 app.use('/api/users', usersRoutes)
+app.use(bodyParser.urlencoded({ extended: true }));
 
 //Gestion des erreurs 404
 app.use(({res}) => {

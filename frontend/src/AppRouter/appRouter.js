@@ -3,7 +3,7 @@ import { Route, Router, Switch } from "react-router";
 import { createBrowserHistory } from "history";
 import signin from "../components/signin/signin";
 import signup from "../components/signup/signup";
-import CreatePost from "../components/createPost";
+import HomePage from "../pages/home";
 
 
 const history = createBrowserHistory();
@@ -14,7 +14,7 @@ class AppRouter extends React.Component {
         return (
             <Router history={history}>
                 <Switch>
-                    <Route path="/" component={CreatePost} exact={true} />
+                    <Route path="/" component={HomePage} exact={true} />
                     <Route path="/sign-in" component={signin} history={history} />
                     <Route path="/sign-up" component={signup} />
                 </Switch>

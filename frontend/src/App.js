@@ -2,6 +2,10 @@ import React, { Component } from "react";import AppRouter from "./AppRouter/appR
 
 
 class App extends Component {
+  componentDidMount() {
+    console.log("ok");
+    //Aller essayer de s'authentifier avec le token dans les cookies. En attendant, on affiche un loader
+  }
   render() {
     return (
       <AppRouter />

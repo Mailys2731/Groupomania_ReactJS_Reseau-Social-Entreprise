@@ -1,5 +1,6 @@
 const { Post } = require('../db/sequelize')
 const fs = require("fs");
+const { fileURLToPath } = require('url');
 
 
 exports.getPosts = (req, res) => {
@@ -34,10 +35,25 @@ exports.getPost = (req, res) => {
 
 
 exports.createPost = (req, res) => {
-    createPost = JSON.parse(req.body.post)
+    createPost = req.body
+    let fileType = req.file.mimetype.split('/')[1]
+    console.log(fileType)
+
+    let newFileName = req.file.filename + '.' + fileType
+    fs.rename(`./src/uploads/${req.file.filename}`,req.file.filename + '.' + fileType, function(){
+        console.log('callback')
+    } )
+    
+    
+    console.log('newFileName', newFileName)
+  
+    console.log(createPost, "2")
+
+    
     Post.create({
         ...createPost,
-        imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`,
+        
+        imageUrl:`./src/uploads/${req.file.filename}`+ '.' + fileType
     })
 
     .then(post =>{
