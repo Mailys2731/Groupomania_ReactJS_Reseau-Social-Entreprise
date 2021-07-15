@@ -6,7 +6,7 @@ const multer = require('multer');
 
 var storage = multer.diskStorage({
     destination: function (req, file, cb) {
-      cb(null, './src/uploads/')
+      cb(null, 'public/')
     },
     filename: function (req, file, cb) {
       cb(null, file.fieldname + '-' + Date.now())
@@ -18,13 +18,13 @@ var storage = multer.diskStorage({
 
 const postsCtrl = require ('../controllers/posts')
 
-router.get('/', auth, postsCtrl.getPosts)
+router.get('/', postsCtrl.getPosts)
 
-router.get('/:id', auth, postsCtrl.getPost)
+router.get('/:id', postsCtrl.getPost)
 
 router.post('/', upload.single('image'), postsCtrl.createPost)
 
-router.put('/:id', auth, multer, postsCtrl.putPost)
+router.put('/:id', multer, postsCtrl.putPost)
 
 router.delete('/:id', postsCtrl.deletePost)
 

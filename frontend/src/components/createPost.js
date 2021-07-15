@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import PostDataService from '../services/posts-service';
 import { withStyles } from '@material-ui/core/styles';
 import axios from 'axios';
 import Card from '@material-ui/core/Card';
@@ -7,15 +6,16 @@ import CardHeader from '@material-ui/core/CardHeader';
 import CardContent from '@material-ui/core/CardContent';
 
 import Avatar from '@material-ui/core/Avatar';
-import Typography from '@material-ui/core/Typography';
 import { red } from '@material-ui/core/colors';
 import CreateIcon from '@material-ui/icons/Create';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
+import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 
 const styles = theme => ({
     root: {
         maxWidth: '90%',
+        margin:"2rem"
     },
 
     expand: {
@@ -86,7 +86,15 @@ class CreatePost extends Component {
       
         // Request made to the backend api
         // Send formData object
-        axios.post("http://localhost:3000/api/posts/", formData);
+        axios.post("http://localhost:3000/api/posts/", formData)
+        .then(
+            window.alert('Post créé avec succés')
+        )
+        .catch(error => {
+            this.setState({ errorMessage: error.message });
+            console.error('There was an error!', error);
+        })
+
       };
       
    
@@ -96,12 +104,13 @@ class CreatePost extends Component {
         return (
             <Card className={classes.root}>
                 <CardHeader
+                    titleTypographyProps={{variant:'h6' }}
+                    
                     avatar={
                         <Avatar aria-label="recipe" className={classes.avatar}>
                             <CreateIcon />
                         </Avatar>
                     }
-                    disableTypography
                     title="Créer une publication"
 
                 />

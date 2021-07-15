@@ -1,7 +1,7 @@
 
 module.exports = (sequelize, DataTypes) => {
   const User =sequelize.define('User', {
-    id: {
+    userId: {
       type: DataTypes.INTEGER,
       primaryKey: true,
       autoIncrement: true
@@ -18,17 +18,14 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING
     }
   })
-  User.associate = function (models) {
+  User.associate = models => {
     User.hasMany(models.Post, {
-      foreignKey: "userId",
-      as: "posts",
       onDelete: "cascade",
     });
 
     User.hasMany(models.Comment, {
-      foreignKey: "userId",
-      as: "comments",
-      onDelete: "cascade",
+     
+    
     });
   };
   return User; 

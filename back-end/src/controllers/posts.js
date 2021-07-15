@@ -5,66 +5,70 @@ const { fileURLToPath } = require('url');
 
 exports.getPosts = (req, res) => {
     Post.findAll()
-    .then(posts =>{
-        const message = "Liste des posts récupérée"
-        res.json({ message, data: posts })
-    })
-    .catch(error => {
-        const message = `La liste des posts n'a pu être récupérée. Réessayez dans quelques instants.`
-        res.status(500).json({message, data: error})
+        .then(posts => {
+            const message = "Liste des posts récupérée"
+            res.json({ message, data: posts })
+        })
+        .catch(error => {
+            const message = `La liste des posts n'a pu être récupérée. Réessayez dans quelques instants.`
+            res.status(500).json({ message, data: error })
         })
 }
 
 exports.getPost = (req, res) => {
     //pk = clé primaire
     Post.findByPk(req.params.id)
-    .then(post =>{
-        if(post === null) {
-            const message = 'Le post demandé n\'existe pas. Réessayez avec un autre identifiant';
-            return res.status(404).json({message})  
-        }
-        const message = "Un post a bien été trouvé."
-        res.json( { message, data: post }) 
-    })
-    .catch(error => {
-        const message = 'Le post n\'a pas pu être récupéré. Réessayez dans quelques instants.'
-        res.status(500).json({message, data: error})
-    })
+        .then(post => {
+            if (post === null) {
+                const message = 'Le post demandé n\'existe pas. Réessayez avec un autre identifiant';
+                return res.status(404).json({ message })
+            }
+            const message = "Un post a bien été trouvé."
+            res.json({ message, data: post })
+        })
+        .catch(error => {
+            const message = 'Le post n\'a pas pu être récupéré. Réessayez dans quelques instants.'
+            res.status(500).json({ message, data: error })
+        })
 }
 
 
 
 exports.createPost = (req, res) => {
     createPost = req.body
+    console.log("req.body", req.body)
     let fileType = req.file.mimetype.split('/')[1]
     console.log(fileType)
 
     let newFileName = req.file.filename + '.' + fileType
-    fs.rename(`./src/uploads/${req.file.filename}`,req.file.filename + '.' + fileType, function(){
+    fs.rename(`public/${req.file.filename}`, `public/${req.file.filename}` + '.' + fileType, function () {
         console.log('callback')
-    } )
-    
-    
+    })
+
+
     console.log('newFileName', newFileName)
-  
+
     console.log(createPost, "2")
 
-    
+
     Post.create({
         ...createPost,
-        
-        imageUrl:`./src/uploads/${req.file.filename}`+ '.' + fileType
-    })
 
-    .then(post =>{
-        const message = `Le post ${post.name} à bien été ajouté à la liste des posts`
-        res.json({ message, data: post })
+        imageUrl: `${req.protocol}://${req.get("host")}/public/${
+            newFileName
+          }`,
+        
     })
-     .catch(error => {
-        const message = 'Le post n\'a pas pu être ajouté. Réessayez dans quelques instants.'
-        res.status(500).json({message, data: error})
-        console.log(error)
-    })
+   
+        .then(post => {
+            const message = `Le post à bien été ajouté à la liste des posts`
+            res.json({ message, data: post })
+        })
+        .catch(error => {
+            const message = 'Le post n\'a pas pu être ajouté. Réessayez dans quelques instants.'
+            res.status(500).json({ message, data: error })
+            console.log(error)
+        })
 }
 
 exports.putPost = (req, res) => {
@@ -72,40 +76,45 @@ exports.putPost = (req, res) => {
     Post.update(req.body, {
         where: { id: id }
     })
-    .then(_ =>{
-        return Post.findByPk(id).then(post => {
-            if(post === null) {
-                const message = 'Le post demandé n\'existe pas. Réessayez avec un autre identifiant';
-                return res.status(404).json({message})  
-            }
-            const message = `Le post ${ post.name } à bien été modifié.`
-            res.json({ message, data: post }) 
+        .then(_ => {
+            return Post.findByPk(id).then(post => {
+                if (post === null) {
+                    const message = 'Le post demandé n\'existe pas. Réessayez avec un autre identifiant';
+                    return res.status(404).json({ message })
+                }
+                const message = `Le post ${post.name} à bien été modifié.`
+                res.json({ message, data: post })
+            })
         })
-    })
-    .catch(error => {
-        const message = 'Le post n\'a pas pu être modifié. Réessayez dans quelques instants.'
-        res.status(500).json({message, data: error})
-        console.log(error)
-    })
+        .catch(error => {
+            const message = 'Le post n\'a pas pu être modifié. Réessayez dans quelques instants.'
+            res.status(500).json({ message, data: error })
+            console.log(error)
+        })
 }
 
 exports.deletePost = (req, res) => {
-    Post.findByPk(req.params.id).then(post =>{
-        if(post === null) {
+    Post.findByPk(req.params.id).then(post => {
+        if (post === null) {
             const message = 'Le post demandé n\'existe pas. Réessayez avec un autre identifiant';
-            return res.status(404).json({message})  
+            return res.status(404).json({ message })
         }
-        const postDeleted = post;
-        return Post.destroy({
-            where: { id: post.id}
+        const deletedPost = post
+        const filename = post.imageUrl.split('./src/uploads/')[1]
+        fs.unlink(`./src/uploads/${filename}`, () => {
+            return Post.destroy({
+                where: { id: post.id }
+            })
+                .then(_ => {
+
+                    const message = `Le post à bien été supprimé.`
+                    res.json({ message, data: post })
+                })
         })
-        .then(_ =>{
-            const message = `Le post ${postDeleted.name} à bien été supprimé.`
-            res.json({ message, data: post })
-        })
+            .catch(error => {
+                const message = 'Le post n\'a pas pu être supprimé. Réessayez dans quelques instants.'
+                res.status(500).json({ message, data: error })
+            })
     })
-    .catch(error => {
-        const message = 'Le post n\'a pas pu être supprimé. Réessayez dans quelques instants.'
-        res.status(500).json({message, data: error})
-    })
+
 }

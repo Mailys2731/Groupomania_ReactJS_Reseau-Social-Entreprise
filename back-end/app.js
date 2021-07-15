@@ -7,17 +7,19 @@ const sequelize = require('./src/db/sequelize')
 const cors = require ('cors');
 const bodyParser = require ('body-parser')
 
+
 const app = express()
 const port =3000
 
 const path = require('path')
+
 
 app
 .use(morgan ('dev'))
 .use(express.json())
 .use(cors());
 
-//sequelize.initDb()
+sequelize.initDb()
 
 app.use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Origin', '*');
@@ -26,7 +28,8 @@ app.use((req, res, next) => {
     next();
 });
 
-//test
+
+app.use('/public', express.static(path.join(__dirname, 'public')));
 
 
 //Points de terminaison
