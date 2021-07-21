@@ -92,7 +92,7 @@ class SignUp extends Component {
     UserDataService.signUp(user)
       .then((res) => {
         console.log('création compte ok')
-        this.props.history.push("/sign-in");
+        this.props.history.push("/");
       }).catch((error) => {
         console.log(error);
       });
@@ -159,7 +159,7 @@ class SignUp extends Component {
             >
               Créer mon compte
             </Button>
-            <Link href="sign-in">
+            <Link href="/">
               Me connecter
             </Link>
           </form>
@@ -174,4 +174,4 @@ class SignUp extends Component {
 
 
 }
-export default withStyles(styles, { withTheme: true })(SignUp)
+export default withStyles(styles, { $withTheme: "true" })(SignUp)

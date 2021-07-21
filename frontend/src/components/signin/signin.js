@@ -11,7 +11,10 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
 import { withStyles } from '@material-ui/core/styles';
-import logo from '../logos/logo1.png'
+import logo from '../logos/logo1.png';
+import jwt from 'jsonwebtoken';
+import { isJwtExpired } from 'jwt-check-expiration';
+
 
 const styles = (theme) => ({
   paper: {
@@ -68,6 +71,32 @@ class SignIn extends Component {
     }
   }
 
+  /*componentDidMount() {
+    const token = localStorage.getItem('token'); // récupération du token dans le localstorage
+        if(!isJwtExpired(token)){ // si présence du token : accès accepté
+         //props.history.push('/home')
+          window.location.href="/home"
+          console.log('token récupéré')
+          return   
+        }
+        else{
+          return false
+        }
+        
+    /*const token = localStorage.getItem('userTokenLog'); // récupération du token dans le localstorage
+        if( !isJwtExpired(token)){ // si présence du token : accès accepté
+          console.log("token récupéré");
+          window.location.href='/home'
+            
+            
+        } else { // si pas de token : accès refusé
+            alert("Accès refusé. Veuillez vous connecter !");
+            localStorage.clear();
+            return false;
+        }
+  }*/
+  
+
   onChangeUserName(e) {
     this.setState({ userName: e.target.value })
   }
@@ -87,19 +116,34 @@ class SignIn extends Component {
       userName: this.state.userName,
       email: this.state.email,
       password: this.state.password
-    };
-    console.log(user)
+    }
+    
 
     UserDataService.login(user)
-      .then((res) => {
-        localStorage.setItem('userTokenLog', JSON.stringify(res.data));
-        console.log('Connection ok')
-        //window.location = "/mywall";
-      }).catch((error) => {
-        console.log(error);
-        (window.alert("Identifiant/Mot de passe Incorrect"))
-      });
-
+    .then(res => { // si requête ok
+      const token = res.data.token
+      const decodedToken = jwt.verify(token, 'CUSTOM_PRIVATE_KEY'); // vérification du token d'authentification utilisateur
+      const userId = decodedToken.userId;
+      localStorage.setItem('token', JSON.stringify(res.data.token)); // stockage du token dans le localstorage
+      localStorage.setItem('userId', JSON.stringify(userId)); // stockage de l'id utilisateur dans le localstorage
+     
+  })
+  .then(() => {
+      UserDataService.getOneUser() // appel de la requête de récupération d'un utilisateur
+          .then(res => { // si resuête ok
+              const user = res.data;
+              console.log(user)
+              localStorage.setItem('user', JSON.stringify(user)); // stockage de l'utilisateur dans le localstorage
+              console.log(localStorage)
+          })
+          .then(() => {
+              this.props.history.push('/home')
+          })
+          .catch(error => { // si échec requête
+              this.setState({error});
+              alert('Nous n\'avons pas pu vous connecter, veuillez vérifier vos informations !');
+          })
+  })
     this.setState({ userName: '', email: '', password: '' })
   }
   render() {
@@ -159,6 +203,7 @@ class SignIn extends Component {
               color="primary"
               id="submitLogin"
               className={classes.submit}
+              
             >
               Se connecter
             </Button>
@@ -181,7 +226,7 @@ class SignIn extends Component {
 
 
 }
-export default withStyles(styles, { withTheme: true })(SignIn)
+export default withStyles(styles, { $withTheme: "true" })(SignIn)
 
 
 /*const user = new FormData ();

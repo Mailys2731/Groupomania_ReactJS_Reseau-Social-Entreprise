@@ -19,7 +19,7 @@ app
 .use(express.json())
 .use(cors());
 
-sequelize.initDb()
+//sequelize.initDb()
 
 app.use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Origin', '*');

@@ -48,8 +48,11 @@ class Header extends Component {
             <AppBar position="static" className={classes.appBar}>
               <Toolbar className={classes.toolBar}>
                     <img src={LogoWhite} height='50px'></img>
-                    <Button className={classes.buttonAccount}>
+                    <Button 
+                    href= "/Profile"
+                    >
                         <AccountCircleIcon/>
+                        
                     </Button>
                 
               </Toolbar>
@@ -64,4 +67,4 @@ class Header extends Component {
 
 
 
-export default withStyles(styles, { withTheme: true })(Header)
+export default withStyles(styles, { withTheme: "true" })(Header)

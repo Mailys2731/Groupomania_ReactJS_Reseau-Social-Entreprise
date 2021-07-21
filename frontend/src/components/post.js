@@ -18,6 +18,10 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import icon from './logos/icon.png';
 import axios from 'axios';
+import TextField from '@material-ui/core/TextField';
+import Button from '@material-ui/core/Button';
+import Comments from './Comments';
+import SendIcon from '@material-ui/icons/Send';
 
 
 
@@ -44,42 +48,78 @@ const styles = theme => ({
     },
 
     image: {
-        width:"90%"
+        width: "90%"
+    },
+
+    formComment: {
+        display: "flex",
+        marginTop: "20px"
+    },
+
+    commentInput: {
+        flex: "1"
     }
 });
 
 class Post extends Component {
+    constructor(props) {
+        super(props)
+
+        this.onChangeComment = this.onChangeComment.bind(this)
+
+    }
 
     state = {
         expanded: false,
-        posts: []
+        posts: [],
+        comment: ''
     }
 
     componentDidMount() {
         // GET request using axios with error handling
         axios.get('http://localhost:3000/api/posts')
 
-            //.then(console.log(res.data.data))
-
-            .then(res =>
-                this.setState({ posts: res.data.data })
-            )
-            .then(console.log(this.state.posts))
+            .then(res => {
+                const posts = res.data.data.map(post => ({ description: post.description, imageUrl: post.imageUrl, postId: post.postId, userId: post.userId }));
+                this.setState({ posts });
+            })
             .catch(error => {
                 this.setState({ errorMessage: error.message });
                 console.error('There was an error!', error);
             });
-        
+
     }
 
-    /*generateUrl = (post) => {
-        console.log(this.state.posts)
-        const blob = post.imageUrl.blob()
-        const url = URL.createObjectURL(blob)
-        const urlImage = new Image()
-        urlImage.src = url
-    }*/
+    onChangeComment(e) {
+        this.setState({ comment: e.target.value })
+    }
 
+    submitComment = () => {
+        console.log(this.state.posts)
+        /*const post = this.state.posts.map(post => {
+            return {
+                postId: post.postId
+            }
+        })
+        console.log(post)*/
+        const objectComment = {}
+        //objectComment.postId = post.postId
+        objectComment.userId = 1
+        objectComment.postId = 1
+
+
+        objectComment.comment = this.state.comment
+        console.log(objectComment)
+
+        axios.post("http://localhost:3000/api/comments/", objectComment)
+
+            .catch(error => {
+                this.setState({ errorMessage: error.message });
+                console.error('There was an error!', error);
+            })
+
+
+    }
 
 
     handleExpandClick = () => {
@@ -101,7 +141,7 @@ class Post extends Component {
         return (
             <div className={classes.containerCard}>
                 {this.state.posts.map((post) =>
-                    <Card className={classes.root}>
+                    <Card key={post.postId} className={classes.root}>
                         <CardHeader
                             avatar={
                                 <Avatar aria-label="recipe" className={classes.avatar}>
@@ -133,11 +173,35 @@ class Post extends Component {
                             </IconButton>
                         </CardActions>
                         <Collapse in={expanded} timeout="auto" unmountOnExit>
-                            <CardContent>
-                                <Typography>
-                                    Set aside off of the heat to let rest for 10 minutes, and then serve.
-                                </Typography>
-                            </CardContent>
+                            <Card>
+                                <CardContent>
+                                    <div>
+                                        <Comments />
+                                    </div>
+                                    <form method="post">
+                                        <TextField
+                                            color="secondary"
+                                            variant="outlined"
+                                            margin="normal"
+                                            required
+                                            fullWidth
+                                            id="commentaire"
+                                            label="Donnez votre avis!"
+                                            name="commentaire"
+                                            value={this.state.comment} onChange={this.onChangeComment}
+                                        />
+                                        <Button
+                                            variant="contained"
+                                            color="secondary"
+                                            id="submitLogin"
+                                            //className={classes.submit}
+                                            onClick={this.submitComment}
+                                        >
+                                            Poster mon commentaire
+                                        </Button>
+                                    </form>
+                                </CardContent>
+                            </Card>
                         </Collapse>
                     </Card>
                 )}
@@ -146,4 +210,4 @@ class Post extends Component {
     }
 }
 
-export default withStyles(styles, { withTheme: true })(Post)
+export default withStyles(styles, { withTheme: "true" })(Post)

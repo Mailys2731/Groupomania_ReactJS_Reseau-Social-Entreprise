@@ -22,7 +22,7 @@ const styles = theme => ({
         transform: 'rotate(0deg)',
         marginLeft: 'auto',
         transition: theme.transitions.create('transform', {
-            duration: theme.transitions.duration.shortest,
+        sduration: theme.transitions.duration.shortest,
         }),
     },
     expandOpen: {
@@ -48,7 +48,8 @@ class CreatePost extends Component {
     state = {
         description:'',
         // Initially, no file is selected
-        selectedFile: null
+        selectedFile: null,
+        comment:''
       };
 
       onChangeDescription (e) {
@@ -97,7 +98,7 @@ class CreatePost extends Component {
 
       };
       
-   
+
     render() {
         const { classes } = this.props;
 
@@ -134,12 +135,12 @@ class CreatePost extends Component {
                                 color="secondary"
                                 variant="outlined"
                                 margin="normal"
-                                required
+                                required={true}
                                 fullWidth
                                 id="imageUrl"
                                 label="Ajoutez votre image !"
                                 name="image"
-                                focused
+                                focused={true}
                                 onChange={this.onFileChange}
                             />
 
@@ -162,4 +163,4 @@ class CreatePost extends Component {
     }
 }
 
-export default withStyles(styles, { withTheme: true })(CreatePost)
+export default withStyles(styles, { withTheme: "true" })(CreatePost)
