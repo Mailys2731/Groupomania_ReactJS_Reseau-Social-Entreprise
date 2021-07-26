@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import UserDataService from '../../services/users-service';
+import { login } from '../../actions/actionsAuth'
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -12,9 +13,9 @@ import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
 import { withStyles } from '@material-ui/core/styles';
 import logo from '../logos/logo1.png';
+import axios from 'axios'
 import jwt from 'jsonwebtoken';
-import { isJwtExpired } from 'jwt-check-expiration';
-
+import setAuthorizationToken from '../../services/setAuthorizationToken';
 
 const styles = (theme) => ({
   paper: {
@@ -34,7 +35,7 @@ const styles = (theme) => ({
   submit: {
     margin: theme.spacing(3, 0, 2),
   },
-  logo1:{
+  logo1: {
     margin: theme.spacing(2),
   }
 });
@@ -95,7 +96,7 @@ class SignIn extends Component {
             return false;
         }
   }*/
-  
+
 
   onChangeUserName(e) {
     this.setState({ userName: e.target.value })
@@ -117,36 +118,41 @@ class SignIn extends Component {
       email: this.state.email,
       password: this.state.password
     }
-    
 
-    UserDataService.login(user)
-    .then(res => { // si requête ok
-      const token = res.data.token
-      const decodedToken = jwt.verify(token, 'CUSTOM_PRIVATE_KEY'); // vérification du token d'authentification utilisateur
-      const userId = decodedToken.userId;
-      localStorage.setItem('token', JSON.stringify(res.data.token)); // stockage du token dans le localstorage
-      localStorage.setItem('userId', JSON.stringify(userId)); // stockage de l'id utilisateur dans le localstorage
-     
-  })
-  .then(() => {
-      UserDataService.getOneUser() // appel de la requête de récupération d'un utilisateur
-          .then(res => { // si resuête ok
-              const user = res.data;
-              console.log(user)
-              localStorage.setItem('user', JSON.stringify(user)); // stockage de l'utilisateur dans le localstorage
+    
+      return axios.post("http://localhost:3000/api/users/login", user)
+        .then(res => { // si requête ok
+          const token = res.data.token
+          const decodedToken = jwt.verify(token, 'CUSTOM_PRIVATE_KEY'); // vérification du token d'authentification utilisateur
+          const userId = decodedToken.userId;
+          localStorage.setItem('token', JSON.stringify(res.data.token)); // stockage du token dans le localstorage
+          localStorage.setItem('userId', JSON.stringify(userId)); // stockage de l'id utilisateur dans le localstorage
+          setAuthorizationToken(token)
+
+        })
+        .then(() => {
+          UserDataService.getOneUser() // appel de la requête de récupération d'un utilisateur
+            .then(res => { // si requête ok
+              const userName = res.data.userName;
+              console.log(userName)
+              localStorage.setItem('userName', userName); // stockage de l'utilisateur dans le localstorage
               console.log(localStorage)
-          })
-          .then(() => {
+            })
+            .then(() => {
               this.props.history.push('/home')
-          })
-          .catch(error => { // si échec requête
-              this.setState({error});
+            })
+            .catch(error => { // si échec requête
+              console.log(error)
               alert('Nous n\'avons pas pu vous connecter, veuillez vérifier vos informations !');
-          })
-  })
+            })
+        })
+        
+      
     this.setState({ userName: '', email: '', password: '' })
+  
   }
   render() {
+    
     const { classes } = this.props;
     return (
       <Container component="main" maxWidth="xs">
@@ -203,7 +209,7 @@ class SignIn extends Component {
               color="primary"
               id="submitLogin"
               className={classes.submit}
-              
+
             >
               Se connecter
             </Button>

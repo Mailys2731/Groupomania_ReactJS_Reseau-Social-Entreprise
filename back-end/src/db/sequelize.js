@@ -34,6 +34,12 @@ const Post = PostModel(sequelize, DataTypes)
 const User = UserModel(sequelize, DataTypes)
 const Comment = CommentModel(sequelize, DataTypes)
 
+sequelize.models.User.hasMany(Post, {onDelete:'cascade'})
+Post.belongsTo(sequelize.models.User)
+sequelize.models.User.hasMany(Comment,  {onDelete:'cascade'})
+Comment.belongsTo(sequelize.models.User)
+sequelize.models.Post.hasMany(Comment,  {onDelete:'cascade'}) 
+Comment.belongsTo(sequelize.models.Post)
 
 //Synchronise tous les modèles à la BDD
 //Force simplifie le développement

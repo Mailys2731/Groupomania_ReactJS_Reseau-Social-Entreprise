@@ -1,19 +1,17 @@
 
 module.exports = (sequelize, DataTypes) => {
   //define déclare un nouveau model au sein de sequelize (sequelize va créer la table postS)
-  const Post = sequelize.define('Post', {
-    postId: {
+  return sequelize.define('Post', {
+    id: {
       type: DataTypes.INTEGER, //entier
       //garanti l'unicité de l'id de chaque posts
       primaryKey: true,
       autoIncrement: true
     },
-    userId: {
-      type: DataTypes.INTEGER, //entier
-      //garanti l'unicité de l'id de chaque posts
-      foreignKey: true,
+    userName: {
+      type: DataTypes.STRING,
+      allowNull: false,
     },
-   
     description: {
       type: DataTypes.STRING,
       allowNull: false
@@ -29,14 +27,8 @@ module.exports = (sequelize, DataTypes) => {
     createdAt: 'created',
     updatedAt: true
   })
-  Post.associate = models => {
-    Post.belongsTo(models.User, {
-      foreignKey: {
-        name:userId,
-        allowNull:false
-      },
-    })
-  }
-  return Post
+
+
+
 }
 

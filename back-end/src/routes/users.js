@@ -7,8 +7,11 @@ router.post('/login', usersCtrl.login)
 
 router.post('/signup', usersCtrl.signUp)
 
-router.get('/:userId', usersCtrl.getOneUser)
+router.get('/:id', usersCtrl.getOneUser)
 
 router.delete('/:id', usersCtrl.deleteUser)
+
+router.put('/:id/token', usersCtrl.updateToken)
+
 
 module.exports = router

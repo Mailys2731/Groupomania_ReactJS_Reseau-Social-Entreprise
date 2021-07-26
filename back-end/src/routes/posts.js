@@ -18,14 +18,14 @@ var storage = multer.diskStorage({
 
 const postsCtrl = require ('../controllers/posts')
 
-router.get('/', postsCtrl.getPosts)
+router.get('/', auth, postsCtrl.getPosts)
 
-router.get('/:id', postsCtrl.getPost)
+router.get('/:id', auth, postsCtrl.getPost)
 
-router.post('/', upload.single('image'), postsCtrl.createPost)
+router.post('/', auth, upload.single('image'), postsCtrl.createPost)
 
-router.put('/:id', multer, postsCtrl.putPost)
+router.put('/:id', auth, multer, postsCtrl.putPost)
 
-router.delete('/:id', postsCtrl.deletePost)
+router.delete('/:id', auth, postsCtrl.deletePost)
 
 module.exports = router

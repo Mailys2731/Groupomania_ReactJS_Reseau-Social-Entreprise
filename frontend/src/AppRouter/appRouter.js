@@ -37,9 +37,9 @@ class AppRouter extends React.Component {
         return (
             <Router history={history}>
                 <Switch>
-                    <ProtectedRoute path="/home"  redirectRoute="/" guardFunction={this.guardFunction} component={HomePage}   exact/>
+                    <ProtectedRoute path="/home"  redirectRoute="/" guardFunction={this.guardFunction} component={HomePage} user={this.props.user}   exact/>
                     <ProtectedRoute path="/profile" component={ProfileUser} guardFunction={this.guardFunction} exact />
-                    <Route path="/" component={SignIn} exact history={history} />
+                    <Route path="/" component={SignIn} exact history={history} login={this.login}  />
                     <Route path="/sign-up" component={SignUp} />
                     <Route path="*" component={() => "404 NOT FOUND"}/>
                 </Switch>

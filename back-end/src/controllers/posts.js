@@ -36,30 +36,21 @@ exports.getPost = (req, res) => {
 
 exports.createPost = (req, res) => {
     createPost = req.body
-    console.log("req.body", req.body)
     let fileType = req.file.mimetype.split('/')[1]
-    console.log(fileType)
 
     let newFileName = req.file.filename + '.' + fileType
     fs.rename(`public/${req.file.filename}`, `public/${req.file.filename}` + '.' + fileType, function () {
         console.log('callback')
     })
 
-
-    console.log('newFileName', newFileName)
-
-    console.log(createPost, "2")
-
-
     Post.create({
         ...createPost,
 
-        imageUrl: `${req.protocol}://${req.get("host")}/public/${
-            newFileName
-          }`,
-        
+        imageUrl: `${req.protocol}://${req.get("host")}/public/${newFileName
+            }`,
+
     })
-   
+
         .then(post => {
             const message = `Le post à bien été ajouté à la liste des posts`
             res.json({ message, data: post })
@@ -103,18 +94,20 @@ exports.deletePost = (req, res) => {
         const filename = post.imageUrl.split('./src/uploads/')[1]
         fs.unlink(`./src/uploads/${filename}`, () => {
             return Post.destroy({
-                where: { id: post.id }
+                where: { postId: post.postId }
             })
                 .then(_ => {
 
                     const message = `Le post à bien été supprimé.`
                     res.json({ message, data: post })
                 })
-        })
-            .catch(error => {
-                const message = 'Le post n\'a pas pu être supprimé. Réessayez dans quelques instants.'
-                res.status(500).json({ message, data: error })
-            })
-    })
 
+                .catch(error => {
+                    const message = 'Le post n\'a pas pu être supprimé. Réessayez dans quelques instants.'
+                    res.status(500).json({ message})
+                    console.log(error)
+                })
+        })
+
+    })
 }

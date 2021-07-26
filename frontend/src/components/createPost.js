@@ -10,7 +10,10 @@ import { red } from '@material-ui/core/colors';
 import CreateIcon from '@material-ui/icons/Create';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
-import AccountCircleIcon from '@material-ui/icons/AccountCircle';
+
+// ES6 Modules or TypeScript
+import Swal from 'sweetalert2'
+
 
 const styles = theme => ({
     root: {
@@ -49,11 +52,12 @@ class CreatePost extends Component {
         description:'',
         // Initially, no file is selected
         selectedFile: null,
-        comment:''
+        comment:'',
+        descriptionError: false
       };
 
       onChangeDescription (e) {
-          this.setState({description:e.target.value})
+          this.setState({description:e.target.value, descriptionError: false})
       }
       
       // On file select (from the pop up)
@@ -77,9 +81,26 @@ class CreatePost extends Component {
           this.state.selectedFile,
           this.state.selectedFile.name
         );
+        if(!this.state.description){
+            this.setState(() => ({
+                descriptionError: true
+            }))
+            return false;
+        }
         formData.append(
             "description",
             this.state.description
+        )
+
+        formData.append(
+            "UserId",
+            localStorage.getItem('userId')
+
+        )
+
+        formData.append(
+            "userName",
+            localStorage.getItem('userName')
         )
       
         // Details of the uploaded file
@@ -87,14 +108,20 @@ class CreatePost extends Component {
       
         // Request made to the backend api
         // Send formData object
-        axios.post("http://localhost:3000/api/posts/", formData)
+        axios.post("http://localhost:3000/api/posts/", formData, { headers: { Authorization: `Bearer ${JSON.parse(localStorage.token)}` } } )
+
         .then(
+            console.log(localStorage.token),
             window.alert('Post créé avec succés')
+        )
+        .then(
+            window.location.reload()
         )
         .catch(error => {
             this.setState({ errorMessage: error.message });
-            console.error('There was an error!', error);
+            console.log('There was an error!', error);
         })
+        
 
       };
       
@@ -120,11 +147,13 @@ class CreatePost extends Component {
                     <div>
                         <form encType="multipart/form-data" method="POST">
                             <TextField
+                                error={this.state.descriptionError}
                                 color="secondary"
                                 variant="outlined"
                                 margin="normal"
-                                required
+                                required={true}
                                 fullWidth
+                                maxLength={8000}
                                 id="description"
                                 label="A quoi pensez vous ?"
                                 name="description"
@@ -135,12 +164,12 @@ class CreatePost extends Component {
                                 color="secondary"
                                 variant="outlined"
                                 margin="normal"
-                                required={true}
+                                required
                                 fullWidth
                                 id="imageUrl"
                                 label="Ajoutez votre image !"
                                 name="image"
-                                focused={true}
+                                focused
                                 onChange={this.onFileChange}
                             />
 

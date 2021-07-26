@@ -7,12 +7,8 @@ module.exports = (sequelize, DataTypes) => {
         primaryKey: true,
         autoIncrement: true
       },
-      userId: {
-        type: DataTypes.INTEGER,
-        allowNull: false
-      },
-      postId: {
-        type: DataTypes.INTEGER,
+      userName: {
+        type: DataTypes.STRING,
         allowNull: false
       },
       comment: {
@@ -26,4 +22,5 @@ module.exports = (sequelize, DataTypes) => {
       createdAt: 'created',
       updatedAt: false
     })
+    
   }
