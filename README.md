@@ -36,5 +36,5 @@ Lancement de l'application :
 **Installez les dépendances avec la commande suivante :**
 `npm install`
 
-Lancez l'application avec la commande suivante :
+**Lancez l'application avec la commande suivante :**
 `npm run start`
