@@ -1,4 +1,4 @@
-*Projet 7 - Formation Développeur Web d'Openclassrooms*
+*Projet 7 - Formation Développeur Web Openclassrooms*
 
 Groupomania : création d'un réseau social d'entreprise.
 ------
