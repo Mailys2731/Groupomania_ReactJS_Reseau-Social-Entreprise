@@ -1,11 +1,14 @@
 *Projet 7 - Formation Développeur Web d'Openclassrooms*
+
 Groupomania : création d'un réseau social d'entreprise.
 ------
 
 Stack technique :
 ----
 **Base de données :** MySql.  
+
 **Backend :** NodeJs / Express / Sequelize.
+
 **Frontend :** React / MaterialUI.
 
 Prérequis :
