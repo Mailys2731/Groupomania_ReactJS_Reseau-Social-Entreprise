@@ -48,17 +48,6 @@ const initDb = () => {
     return sequelize.sync({force: true})
     .then(_ =>{
         console.log('INIT DB')
-    
-        /*bcrypt.hash ('mailys, 10')
-        .then(hash => {
-            User.create({
-                username:'Mailys',
-                password:hash
-            })
-        })
-        .then(user => console.log(user.toJSON()))
-        */
-
         console.log('La base de données a bien été synchronisée')
     })
 }

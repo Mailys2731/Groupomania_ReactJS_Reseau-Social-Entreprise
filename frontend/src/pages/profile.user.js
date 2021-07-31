@@ -5,7 +5,6 @@ import Container from '@material-ui/core/Container';
 import swal from 'sweetalert2';
 import Header from '../components/header';
 import { withStyles } from '@material-ui/core/styles';
-import Typography from '@material-ui/core/Typography';
 
 
 const styles = theme => ({

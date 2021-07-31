@@ -50,7 +50,6 @@ class CreatePost extends Component {
     }
     state = {
         description:'',
-        // Initially, no file is selected
         selectedFile: null,
         comment:'',
         descriptionError: false
@@ -60,19 +59,15 @@ class CreatePost extends Component {
           this.setState({description:e.target.value, descriptionError: false})
       }
       
-      // On file select (from the pop up)
 
       onFileChange = event => {
       
-        // Update the state
         this.setState({ selectedFile: event.target.files[0] });
       
       };
 
-      // On file upload (click the upload button)
     onFileUpload = () => {
     
-        // Create an object of formData
         const formData = new FormData();
 
         if(!this.state.description){
@@ -86,7 +81,6 @@ class CreatePost extends Component {
 
             return false
         }
-        // Update the formData object
         formData.append(
           "image",
           this.state.selectedFile,
@@ -110,13 +104,9 @@ class CreatePost extends Component {
             localStorage.getItem('userName')
         )
       
-        // Details of the uploaded file
         console.log(this.state.selectedFile);
 
-        
-        // Request made to the backend api
-        // Send formData object
-        axios.post("http://localhost:3000/api/posts/", formData, { headers: { Authorization: `Bearer ${localStorage.token}` } } )
+                axios.post("http://localhost:3000/api/posts/", formData, { headers: { Authorization: `Bearer ${localStorage.token}` } } )
 
         .then(
             console.log('post créé avec succés'),

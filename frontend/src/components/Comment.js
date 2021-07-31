@@ -90,10 +90,14 @@ class Comment extends Component {
                                     {this.props.comment.comment}
 
                                 </Typography>
-                                <div>
+                                
+                            </React.Fragment>
+                        }
+                    />
+                    <div>
                                     {
 
-                                        localStorage.admin == "true" && <Button
+                                        localStorage.admin === "true" && <Button
                                             color="secondary"
                                             startIcon={<DeleteIcon />}
                                             onClick={this.buttonDelete}
@@ -105,9 +109,6 @@ class Comment extends Component {
 
                                     }
                                 </div>
-                            </React.Fragment>
-                        }
-                    />
                 </ListItem>
                 <Divider variant="inset" component="li" />
             </List>

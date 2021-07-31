@@ -59,9 +59,4 @@ class Header extends Component {
     }
 }
 
-//<IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu"></IconButton>
-
-
-
-
 export default withStyles(styles, { withTheme: "true" })(Header)

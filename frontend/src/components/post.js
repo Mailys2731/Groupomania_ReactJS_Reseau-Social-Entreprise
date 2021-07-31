@@ -180,7 +180,7 @@ class Post extends Component {
                     <div>
                         {
 
-                            localStorage.admin=="true" && <Button
+                            localStorage.admin==="true" && <Button
                                 color="secondary"
                                 startIcon={<DeleteIcon />}
                                 onClick={this.buttonDelete}

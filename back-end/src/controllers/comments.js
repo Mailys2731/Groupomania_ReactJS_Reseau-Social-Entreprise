@@ -1,4 +1,4 @@
-const { Comment, Post, User } = require('../db/sequelize')
+const { Comment } = require('../db/sequelize')
 
 exports.getComments = (req, res) => {
     Comment.findAll()

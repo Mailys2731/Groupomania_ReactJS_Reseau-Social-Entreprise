@@ -26,7 +26,6 @@ class DisplayPosts extends Component {
 
     componentDidMount() {
      
-        // GET request using axios with error handling
         axios.get('http://localhost:3000/api/posts', { headers: { Authorization: `Bearer ${localStorage.token}` } })
 
             .then(res => {
