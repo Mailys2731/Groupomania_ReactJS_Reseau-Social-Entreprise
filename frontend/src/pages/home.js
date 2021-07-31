@@ -8,7 +8,7 @@ class HomePage extends Component {
     render(){
         return(
             <div>
-            <Header/>
+            <Header history={this.props.history}/>
             <CreatePost/>
             <DisplayPosts/>
             </div>

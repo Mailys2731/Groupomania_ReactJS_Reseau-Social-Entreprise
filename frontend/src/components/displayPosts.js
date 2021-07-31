@@ -1,8 +1,17 @@
 import React, { Component } from 'react';
-import { withStyles } from '@material-ui/core/styles';
 import axios from 'axios';
 import Post from '../components/post'
+import { withStyles } from '@material-ui/core/styles';
 
+const styles = theme => ({
+    root: {
+        width: '100%',
+        display:'flex',
+        flexDirection:'column',
+        alignItem:'center',
+        margin:'0'
+    }
+})
 
 
 
@@ -18,10 +27,13 @@ class DisplayPosts extends Component {
     componentDidMount() {
      
         // GET request using axios with error handling
-        axios.get('http://localhost:3000/api/posts', { headers: { Authorization: `Bearer ${JSON.parse(localStorage.token)}` } })
+        axios.get('http://localhost:3000/api/posts', { headers: { Authorization: `Bearer ${localStorage.token}` } })
 
             .then(res => {
+                
                 const posts = res.data.data.map(post => ({ description: post.description, imageUrl: post.imageUrl, id: post.id, userId: post.UserId, userName: post.userName }));
+                posts.reverse()
+
                 this.setState({ posts })
             })
             .catch(error => {
@@ -33,11 +45,13 @@ class DisplayPosts extends Component {
 
    
     render() {
+        const { classes } = this.props;
+
         return (
-            <div>
+            <div className={classes.root}>
                 {this.state.posts.map((post) =>
 
-                    <Post post = {post} posts = {this.state.posts} />
+                    <Post post = {post} posts = {this.state.posts} key={post.id} />
 
                 )}
             </div>
@@ -46,4 +60,5 @@ class DisplayPosts extends Component {
 
 }
 
-export default DisplayPosts
+
+export default withStyles(styles, { withTheme: "true" })(DisplayPosts)

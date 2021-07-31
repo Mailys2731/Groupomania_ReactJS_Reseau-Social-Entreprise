@@ -4,15 +4,15 @@ import axios from 'axios';
 import Card from '@material-ui/core/Card';
 import CardHeader from '@material-ui/core/CardHeader';
 import CardContent from '@material-ui/core/CardContent';
-
+import swal from 'sweetalert2';
 import Avatar from '@material-ui/core/Avatar';
 import { red } from '@material-ui/core/colors';
 import CreateIcon from '@material-ui/icons/Create';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 
-// ES6 Modules or TypeScript
-import Swal from 'sweetalert2'
+
+//import Swal from 'sweetalert2'
 
 
 const styles = theme => ({
@@ -25,7 +25,7 @@ const styles = theme => ({
         transform: 'rotate(0deg)',
         marginLeft: 'auto',
         transition: theme.transitions.create('transform', {
-        sduration: theme.transitions.duration.shortest,
+        duration: theme.transitions.duration.shortest,
         }),
     },
     expandOpen: {
@@ -74,19 +74,26 @@ class CreatePost extends Component {
     
         // Create an object of formData
         const formData = new FormData();
-      
-        // Update the formData object
-        formData.append(
-          "image",
-          this.state.selectedFile,
-          this.state.selectedFile.name
-        );
+
         if(!this.state.description){
             this.setState(() => ({
                 descriptionError: true
             }))
             return false;
         }
+        if(!this.state.selectedFile){
+            new swal("Veuillez sélectionner une image", "", "warning")
+
+            return false
+        }
+        // Update the formData object
+        formData.append(
+          "image",
+          this.state.selectedFile,
+          this.state.selectedFile.name
+        );
+        
+
         formData.append(
             "description",
             this.state.description
@@ -105,23 +112,26 @@ class CreatePost extends Component {
       
         // Details of the uploaded file
         console.log(this.state.selectedFile);
-      
+
+        
         // Request made to the backend api
         // Send formData object
-        axios.post("http://localhost:3000/api/posts/", formData, { headers: { Authorization: `Bearer ${JSON.parse(localStorage.token)}` } } )
+        axios.post("http://localhost:3000/api/posts/", formData, { headers: { Authorization: `Bearer ${localStorage.token}` } } )
 
         .then(
-            console.log(localStorage.token),
-            window.alert('Post créé avec succés')
+            console.log('post créé avec succés'),
+            new swal("Post créé avec succés !", "", "success")
         )
-        .then(
-            window.location.reload()
-        )
+        
         .catch(error => {
             this.setState({ errorMessage: error.message });
             console.log('There was an error!', error);
+            new swal("Nous rencontrons un problème avec la création de votre publication", "Veuillez nous excuser pour la gène occasionnée", "warning")
+
         })
-        
+        .then(
+            window.location.reload()
+        )
 
       };
       
@@ -145,13 +155,13 @@ class CreatePost extends Component {
                 <CardContent>
 
                     <div>
-                        <form encType="multipart/form-data" method="POST">
+                        <form encType="multipart/form-data" method="POST"> 
                             <TextField
                                 error={this.state.descriptionError}
                                 color="secondary"
                                 variant="outlined"
                                 margin="normal"
-                                required={true}
+                                required
                                 fullWidth
                                 maxLength={8000}
                                 id="description"
@@ -160,7 +170,7 @@ class CreatePost extends Component {
                                 value={this.state.description} onChange={this.onChangeDescription}
                             />
                             <TextField
-                                input type="file"
+                                type="file"
                                 color="secondary"
                                 variant="outlined"
                                 margin="normal"

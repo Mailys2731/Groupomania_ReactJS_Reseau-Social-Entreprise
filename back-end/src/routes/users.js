@@ -1,5 +1,7 @@
 const express = require ('express')
 const router = express.Router()
+const auth = require ('../auth/auth')
+
 
 const usersCtrl = require ('../controllers/users')
 
@@ -9,9 +11,9 @@ router.post('/signup', usersCtrl.signUp)
 
 router.get('/:id', usersCtrl.getOneUser)
 
-router.delete('/:id', usersCtrl.deleteUser)
+router.delete('/:id', auth, usersCtrl.deleteUser)
 
-router.put('/:id/token', usersCtrl.updateToken)
+router.put('/:id', auth, usersCtrl.updateToken)
 
 
 module.exports = router

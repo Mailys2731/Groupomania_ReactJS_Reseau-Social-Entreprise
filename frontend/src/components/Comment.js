@@ -9,6 +9,8 @@ import Avatar from '@material-ui/core/Avatar';
 import Typography from '@material-ui/core/Typography';
 import icon from './logos/icon.png';
 import axios from 'axios';
+import DeleteIcon from '@material-ui/icons/Delete';
+import Button from '@material-ui/core/Button';
 
 const styles = theme => ({
     root: {
@@ -22,9 +24,10 @@ const styles = theme => ({
 });
 
 class Comment extends Component {
-    constructor(props) {
-        super(props)
+    state= {
+        comment:''
     }
+
 
     onSubmit(e) {
         axios.get('http://localhost:3000/api/comments')
@@ -41,7 +44,29 @@ class Comment extends Component {
                 //this.setState({ errorMessage: error.message });
                 console.error('There was an error!', error);
             })
+
+        
     }
+
+    buttonDelete = () => {
+        const id = this.props.comment.id;
+        console.log(id)
+        const admin = localStorage.admin;
+
+
+        if (admin) {
+            axios.delete(`http://localhost:3000/api/comments/${id}`, { headers: { Authorization: `Bearer ${localStorage.token}` } })
+                .then(res => {
+                    window.location.reload()
+                })
+                .catch(error => {
+                    console.log(error)
+                })
+        }
+
+    }
+
+
     render() {
         const { classes } = this.props;
         return (
@@ -62,9 +87,24 @@ class Comment extends Component {
                                     className={classes.inline}
                                     color="textPrimary"
                                 >
-                                {this.props.comment.comment}
+                                    {this.props.comment.comment}
 
                                 </Typography>
+                                <div>
+                                    {
+
+                                        localStorage.admin == "true" && <Button
+                                            color="secondary"
+                                            startIcon={<DeleteIcon />}
+                                            onClick={this.buttonDelete}
+                                            size='small'
+                                        >
+                                            supprimer
+                                        </Button>
+
+
+                                    }
+                                </div>
                             </React.Fragment>
                         }
                     />

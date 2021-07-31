@@ -29,11 +29,17 @@ exports.signUp = (req, res) => {
               return res.status(201).json({ message: 'Utilisateur créé avec succés' })
             }
           })
-          .catch((error) => { res.status(401).json({ error }) });
+          .catch((error) => { res.status(401).json({ error }) 
+        console.log(error)});
       })
-      .catch((error) => { res.status(500).json({ message: " erreur serveur " + error }) })
+      .catch(error => {
+        res.status(500).json({ message: " erreur serveur " + error })
+        console.log(error)
+      })
+
   } else {
     res.status(400).json({ message: " paramètres incorrects (Le mot de passe doit contenir minimum 8 caractères, une lettre et un chiffre)" })
+    console.log(error)
   }
 }
 
@@ -59,7 +65,6 @@ exports.login = (req, res) => {
       console.log("responseTest", response)
       User.token = await response;
       await User.save();
-      console.log("Usertest", User)
 
       res.status(200).json({ // connexion de l'utilisateur
         userId: User.id,
@@ -122,20 +127,20 @@ exports.updateToken = (req, res) => {
       return res.status(404).json({ message })
     }
     User.update(
-      
-    {
-      ...user, token:null
-    },
-    {
-      where: { userId: user.id }
-    })
+
+      {
+        ...user, token: null
+      },
+      {
+        where: { id: user.id }
+      })
       .then(_ => {
-        const message = `L\'utilisateur à bien été supprimé.`
+        const message = `L\'utilisateur à bien été déconnecté.`
         res.status(200).json({ message, data: user })
       })
   })
     .catch(error => {
-      const message = 'L\'utilisateur n\'a pas pu être supprimé. Réessayez dans quelques instants.'
+      const message = 'L\'utilisateur n\'a pas pu être déconnecté. Réessayez dans quelques instants.'
       res.status(500).json({ message })
       console.log(error)
     })

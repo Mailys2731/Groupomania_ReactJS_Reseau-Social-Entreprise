@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import UserDataService from '../../services/users-service';
-import { login } from '../../actions/actionsAuth'
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -15,7 +14,7 @@ import { withStyles } from '@material-ui/core/styles';
 import logo from '../logos/logo1.png';
 import axios from 'axios'
 import jwt from 'jsonwebtoken';
-import setAuthorizationToken from '../../services/setAuthorizationToken';
+
 
 const styles = (theme) => ({
   paper: {
@@ -72,6 +71,8 @@ class SignIn extends Component {
     }
   }
 
+
+
   /*componentDidMount() {
     const token = localStorage.getItem('token'); // récupération du token dans le localstorage
         if(!isJwtExpired(token)){ // si présence du token : accès accepté
@@ -119,41 +120,44 @@ class SignIn extends Component {
       password: this.state.password
     }
 
-    
-      return axios.post("http://localhost:3000/api/users/login", user)
-        .then(res => { // si requête ok
-          const token = res.data.token
-          const decodedToken = jwt.verify(token, 'CUSTOM_PRIVATE_KEY'); // vérification du token d'authentification utilisateur
-          const userId = decodedToken.userId;
-          localStorage.setItem('token', JSON.stringify(res.data.token)); // stockage du token dans le localstorage
-          localStorage.setItem('userId', JSON.stringify(userId)); // stockage de l'id utilisateur dans le localstorage
-          setAuthorizationToken(token)
 
-        })
-        .then(() => {
-          UserDataService.getOneUser() // appel de la requête de récupération d'un utilisateur
-            .then(res => { // si requête ok
-              const userName = res.data.userName;
-              console.log(userName)
-              localStorage.setItem('userName', userName); // stockage de l'utilisateur dans le localstorage
-              console.log(localStorage)
-            })
-            .then(() => {
-              this.props.history.push('/home')
-            })
-            .catch(error => { // si échec requête
-              console.log(error)
-              alert('Nous n\'avons pas pu vous connecter, veuillez vérifier vos informations !');
-            })
-        })
-        
-      
-    this.setState({ userName: '', email: '', password: '' })
-  
+    return axios.post("http://localhost:3000/api/users/login", user)
+      .then(res => { // si requête ok
+        const token = res.data.token
+        const decodedToken = jwt.verify(token, 'CUSTOM_PRIVATE_KEY'); // vérification du token d'authentification utilisateur
+        const userId = decodedToken.userId;
+        localStorage.setItem('token', token) // stockage du token dans le localstorage
+        localStorage.setItem('userId', userId); // stockage de l'id utilisateur dans le localstorage
+      })
+      .then(() => {
+        UserDataService.getOneUser() // appel de la requête de récupération d'un utilisateur
+          .then(res => { // si requête ok
+            const userName = res.data.userName;
+            const admin = res.data.admin;
+            const userEmail = res.data.email;
+            localStorage.setItem('admin', admin)
+            console.log(userName)
+            localStorage.setItem('userName', userName); // stockage de l'utilisateur dans le localstorage
+            localStorage.setItem('userEmail', userEmail)
+            console.log(localStorage)
+          })
+          .then(() => {
+            this.props.history.push('/home')
+          })
+          .catch(error => { // si échec requête
+            console.log(error)
+            alert('Nous n\'avons pas pu vous connecter, veuillez vérifier vos informations !');
+          })
+      })
+
+
   }
+
+
   render() {
-    
+
     const { classes } = this.props;
+
     return (
       <Container component="main" maxWidth="xs">
         <CssBaseline />
@@ -233,27 +237,3 @@ class SignIn extends Component {
 
 }
 export default withStyles(styles, { $withTheme: "true" })(SignIn)
-
-
-/*const user = new FormData ();
-
-user.append("username", document.getElementById('userName'));
-user.append("email", document.getElementById('email'));
-user.append("password", document.getElementById('password'));
-
-
-console.log(user)
-
-
-const loginUser = () => {
-  UserDataService.login(user)
-    .then(function (res) {
-      //On traite la suite une fois la réponse obtenue
-      console.log(res);
-    })
-    .catch(function (error) {
-      //On traite ici les erreurs éventuellement survenues
-      console.log(error);
-    });
-}
-loginUser()*/

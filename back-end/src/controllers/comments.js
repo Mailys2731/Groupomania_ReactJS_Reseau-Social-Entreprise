@@ -33,21 +33,21 @@ exports.createComment = (req, res) => {
 
 exports.deleteComment = (req, res) => {
     Comment.findByPk(req.params.id).then(comment =>{
-        if(post === null) {
+        if(comment === null) {
             const message = 'Le commentaire demandé n\'existe pas. Réessayez avec un autre identifiant';
             return res.status(404).json({message})  
         }
-        const commentDeleted = comment;
         return Comment.destroy({
             where: { id: comment.id}
         })
         .then(_ =>{
-            const message = `Le commentaire ${commentDeleted.name} à bien été supprimé.`
+            const message = `Le commentaire à bien été supprimé.`
             res.json({ message, data: comment })
         })
     })
     .catch(error => {
         const message = 'Le commentaire n\'a pas pu être supprimé. Réessayez dans quelques instants.'
-        res.status(500).json({message, data: error})
+        console.log(error)
+        res.status(500).json({message})
     })
 }

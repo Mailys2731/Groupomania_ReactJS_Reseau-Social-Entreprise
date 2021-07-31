@@ -3,7 +3,6 @@ import { withStyles } from '@material-ui/core/styles';
 import clsx from 'clsx';
 import Card from '@material-ui/core/Card';
 import CardHeader from '@material-ui/core/CardHeader';
-import CardMedia from '@material-ui/core/CardMedia';
 import CardContent from '@material-ui/core/CardContent';
 import CardActions from '@material-ui/core/CardActions';
 import Collapse from '@material-ui/core/Collapse';
@@ -21,9 +20,11 @@ import DeleteIcon from '@material-ui/icons/Delete';
 
 const styles = theme => ({
     root: {
-        maxWidth: 345,
+        maxWidth: 500,
+        minWidth: '70%',
         margin: "1rem",
-        justifyContent: "center"
+        alignSelf: "center"
+
     },
     media: {
         height: 0,
@@ -42,7 +43,9 @@ const styles = theme => ({
     },
 
     image: {
-        width: "90%"
+        minWidth: 150,
+        width: "90%",
+        marginTop: '1rem',
     },
 
     formComment: {
@@ -53,8 +56,8 @@ const styles = theme => ({
     commentInput: {
         flex: "1"
     },
-   
-    
+
+
 });
 
 class Post extends Component {
@@ -69,23 +72,11 @@ class Post extends Component {
     state = {
         expanded: false,
 
-        comments: []
+        comments: [],
+        posts: this.props.posts,
+        comment:""
     }
 
-   /* componentDidMount() {
-        const buttonDelete = document.getElementsByClassName('buttonDelete')
-        this.props.posts.forEach(post => {
-            if (post.userId != localStorage.UserId) {
-            
-                buttonDelete.setAttribut()
-                  } else {
-                      this.buttonDelete.style.display = 'block'
-                  } 
-        })
-
-        console.log(document.getElementById('buttonDelete'))
-   
-    }*/
 
     onChangeComment(e) {
         this.setState({ comment: e.target.value })
@@ -93,12 +84,6 @@ class Post extends Component {
 
     submitComment = () => {
 
-        /*const post = this.state.posts.map(post => {
-            return {
-                postId: post.postId
-            }
-        })
-        console.log(post)*/
         const objectComment = {}
         objectComment.PostId = this.props.post.id
         objectComment.UserId = localStorage.getItem('userId')
@@ -107,6 +92,14 @@ class Post extends Component {
         console.log(objectComment)
 
         axios.post("http://localhost:3000/api/comments/", objectComment)
+            .then((response) => {
+                const comment = response.data.data
+                this.setState((prevState) => ({
+                    comments: prevState.comments.concat({
+                        id: comment.id, comment: comment.comment, postId: comment.PostId, userId: comment.UserId, userName: comment.userName
+                    })
+                }))
+            })
 
             .catch(error => {
                 this.setState({ errorMessage: error.message });
@@ -114,16 +107,18 @@ class Post extends Component {
             })
 
 
+            this.setState({ comment: "" })
+
     }
 
 
     handleExpandClick = () => {
         if (!this.state.expanded) {
             //axios() Chercher les commentaires, Loading le temps qu'on charge, etc..., Croix rouge si erreur
-            axios.get('http://localhost:3000/api/comments', { headers: { Authorization: `Bearer ${JSON.parse(localStorage.token)}` } })
+            axios.get('http://localhost:3000/api/comments', { headers: { Authorization: `Bearer ${localStorage.token}` } })
 
                 .then(res => {
-                    const comments = res.data.data.map(comment => ({ comment: comment.comment, postId: comment.PostId, userId: comment.UserId, userName: comment.userName }));
+                    const comments = res.data.data.map(comment => ({ id: comment.id, comment: comment.comment, postId: comment.PostId, userId: comment.UserId, userName: comment.userName }));
                     this.setState({ comments })
                 })
                 .catch(error => {
@@ -137,22 +132,37 @@ class Post extends Component {
             expanded: !prevState.expanded
         }))
     }
-    
-    buttonDelete  () {
-        
+
+    buttonDelete = () => {
+        const id = this.props.post.id;
+        const admin = localStorage.admin;
+            
+
+        if (admin) {
+            axios.delete(`http://localhost:3000/api/posts/${id}`, { headers: { Authorization: `Bearer ${localStorage.token}` } })
+                .then(res => {
+                    window.location.reload()
+                })
+                .catch(error => {
+                    console.log(error)
+                })
+        }
+
     }
 
 
 
-    render() {
 
+    render() {
+        console.log(localStorage)
         const { classes } = this.props;
         const expanded = this.state.expanded;
         const postId = this.props.post.id;
-
+        const admin = localStorage.admin;
+        console.log(admin)
         return (
 
-            <Card key={this.props.post.id} className={classes.root}>
+            <Card className={classes.root}>
                 <CardHeader
                     avatar={
                         <Avatar aria-label="recipe" className={classes.avatar}>
@@ -163,21 +173,24 @@ class Post extends Component {
                     subheader={this.props.post.updatedAt}
                 />
                 <CardContent>
-                    <Typography variant="body2" color="textSecondary" component="p">
+                    <Typography variant="body1" color="textPrimary" component="p">
                         {this.props.post.description}
-
                     </Typography>
-                    <img className={classes.image} src={this.props.post.imageUrl}></img>
+                    <img className={classes.image} src={this.props.post.imageUrl} alt='illustration du post'></img>
+                    <div>
+                        {
 
-                    <Button
-                        classes="buttonDelete"
-                        color="secondary"
-                        className={classes.buttonDelete}
-                        startIcon={<DeleteIcon />}
+                            localStorage.admin=="true" && <Button
+                                color="secondary"
+                                startIcon={<DeleteIcon />}
+                                onClick={this.buttonDelete}
+                            >
+                                Supprimer cette publication
+                            </Button>
+                            
 
-                    >
-                        Supprimer ma publication
-                    </Button>
+                        }
+                    </div>
 
                 </CardContent>
                 <CardActions disableSpacing>
@@ -188,6 +201,7 @@ class Post extends Component {
                         onClick={this.handleExpandClick}
                         aria-expanded={expanded}
                         aria-label="show more"
+                        size='small'
                     >
                         <ExpandMoreIcon />
                         Commentaires
@@ -198,8 +212,9 @@ class Post extends Component {
                         <CardContent>
                             <div>
                                 {this.state.comments.map(function (comment) {
-                                    if (comment.postId == postId)
-                                        return <Comment comment={comment} />
+                                    if (comment.postId === postId)
+                                        return <Comment comment={comment} key={comment.id} />
+                                    return true
                                 }
 
                                 )}

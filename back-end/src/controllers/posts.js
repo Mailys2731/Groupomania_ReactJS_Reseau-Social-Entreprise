@@ -1,6 +1,7 @@
 const { Post } = require('../db/sequelize')
 const fs = require("fs");
 const { fileURLToPath } = require('url');
+const { Console } = require('console');
 
 
 exports.getPosts = (req, res) => {
@@ -85,27 +86,27 @@ exports.putPost = (req, res) => {
 }
 
 exports.deletePost = (req, res) => {
+    console.log(req.user)
     Post.findByPk(req.params.id).then(post => {
         if (post === null) {
             const message = 'Le post demandé n\'existe pas. Réessayez avec un autre identifiant';
             return res.status(404).json({ message })
         }
-        const deletedPost = post
-        const filename = post.imageUrl.split('./src/uploads/')[1]
-        fs.unlink(`./src/uploads/${filename}`, () => {
+        const filename = post.imageUrl.split('public/')[1]
+        fs.unlink(`public/${filename}`, () => {
             return Post.destroy({
-                where: { postId: post.postId }
+                where: { id: post.id }
             })
                 .then(_ => {
-
+                    console.log('post supprimé avec succès')
                     const message = `Le post à bien été supprimé.`
                     res.json({ message, data: post })
                 })
 
                 .catch(error => {
+                    console.log(error)
                     const message = 'Le post n\'a pas pu être supprimé. Réessayez dans quelques instants.'
                     res.status(500).json({ message})
-                    console.log(error)
                 })
         })
 

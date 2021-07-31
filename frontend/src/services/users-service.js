@@ -10,10 +10,10 @@ class UserDataService {
     return http.post("/users/signup", data);
   }
 
-  
+
 
   getOneUser = () => {
-    const token = JSON.parse(localStorage.getItem('token'));
+    const token = localStorage.getItem('token');
     const userId = JSON.parse(localStorage.getItem('userId'));
     return http.get(
       `users/${userId}`,
@@ -26,9 +26,6 @@ class UserDataService {
     )
   }
 
-  deleteUser(id) {
-    return http.delete(`/users/${id}`);
-  }
 }
 
-export default new UserDataService();
+export default new UserDataService()
