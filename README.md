@@ -27,10 +27,11 @@ Lancement de l'application :
 **Installez les dépendances avec la commande suivante :**
 `npm install`
 
-**Lancez le serveur avec la commande suivante :
+**Lancez le serveur avec la commande suivante :**
 `npm run start`
 
 *Allez dans le dossier frontend de l'application :*
+`cd frontend`
 
 **Installez les dépendances avec la commande suivante :**
 `npm install`
