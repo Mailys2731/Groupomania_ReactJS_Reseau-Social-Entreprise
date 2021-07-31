@@ -14,8 +14,10 @@ Stack technique :
 Prérequis :
 -------
 **Installer NodeJs et MySql.**
-**Cloner le projet :**
-**Base de données:** décommenter la ligne 22 du fichier 'back-end/src/App.js' `sequelize.initDb()` 
+
+**Cloner le projet :**https://github.com/Mailys2731/MailysCondamy_7_15062021.git
+
+**Base de données:** décommenter la ligne 22 du fichier 'back-end/src/App.js' `sequelize.initDb()`, effectuer un contrôle s puis recommenter.
 
 Lancement de l'application :
 ------
