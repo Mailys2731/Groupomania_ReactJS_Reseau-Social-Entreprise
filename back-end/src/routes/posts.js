@@ -14,7 +14,6 @@ var storage = multer.diskStorage({
   })
    
   var upload = multer({ storage: storage })
-//const upload = multer({dest: '/uploads/'})
 
 const postsCtrl = require ('../controllers/posts')
 
@@ -23,8 +22,6 @@ router.get('/', auth, postsCtrl.getPosts)
 router.get('/:id', auth, postsCtrl.getPost)
 
 router.post('/', auth, upload.single('image'), postsCtrl.createPost)
-
-router.put('/:id', auth, multer, postsCtrl.putPost)
 
 router.delete('/:id', auth, postsCtrl.deletePost)
 

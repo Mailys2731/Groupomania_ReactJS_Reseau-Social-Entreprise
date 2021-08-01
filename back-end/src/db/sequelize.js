@@ -13,13 +13,10 @@ const sequelize = new Sequelize (
     'root',
     //MDP BDD
     '',
-    //Objet de configuration (host et dialect(driver) obligatoire)
     {
         host: 'localhost',
         dialect: 'mysql',
-        //dialectOptions: {
-        //timezone:'Etc/GMT-2'
-        //},
+      
         login: false
         //Time zone et login permettent d'éviter des erreurs
     }

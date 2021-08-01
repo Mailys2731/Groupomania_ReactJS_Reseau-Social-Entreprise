@@ -38,17 +38,15 @@ exports.getPost = (req, res) => {
 exports.createPost = (req, res) => {
     createPost = req.body
     let fileType = req.file.mimetype.split('/')[1]
-
     let newFileName = req.file.filename + '.' + fileType
     fs.rename(`public/${req.file.filename}`, `public/${req.file.filename}` + '.' + fileType, function () {
-        console.log('callback')
+        'callback'
     })
 
     Post.create({
         ...createPost,
 
-        imageUrl: `${req.protocol}://${req.get("host")}/public/${newFileName
-            }`,
+        imageUrl: `${req.protocol}://${req.get("host")}/public/${newFileName}`,
 
     })
 
@@ -58,28 +56,6 @@ exports.createPost = (req, res) => {
         })
         .catch(error => {
             const message = 'Le post n\'a pas pu être ajouté. Réessayez dans quelques instants.'
-            res.status(500).json({ message, data: error })
-            console.log(error)
-        })
-}
-
-exports.putPost = (req, res) => {
-    const id = req.params.id
-    Post.update(req.body, {
-        where: { id: id }
-    })
-        .then(_ => {
-            return Post.findByPk(id).then(post => {
-                if (post === null) {
-                    const message = 'Le post demandé n\'existe pas. Réessayez avec un autre identifiant';
-                    return res.status(404).json({ message })
-                }
-                const message = `Le post ${post.name} à bien été modifié.`
-                res.json({ message, data: post })
-            })
-        })
-        .catch(error => {
-            const message = 'Le post n\'a pas pu être modifié. Réessayez dans quelques instants.'
             res.status(500).json({ message, data: error })
             console.log(error)
         })
@@ -112,3 +88,26 @@ exports.deletePost = (req, res) => {
 
     })
 }
+
+
+/*exports.putPost = (req, res) => {
+    const id = req.params.id
+    Post.update(req.body, {
+        where: { id: id }
+    })
+        .then(_ => {
+            return Post.findByPk(id).then(post => {
+                if (post === null) {
+                    const message = 'Le post demandé n\'existe pas. Réessayez avec un autre identifiant';
+                    return res.status(404).json({ message })
+                }
+                const message = `Le post ${post.name} à bien été modifié.`
+                res.json({ message, data: post })
+            })
+        })
+        .catch(error => {
+            const message = 'Le post n\'a pas pu être modifié. Réessayez dans quelques instants.'
+            res.status(500).json({ message, data: error })
+            console.log(error)
+        })
+}*/
